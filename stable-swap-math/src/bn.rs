@@ -38,6 +38,13 @@ macro_rules! impl_borsh_deserialize_for_bn {
                 *buf = &buf[size_of::<$type>()..];
                 Ok(res)
             }
+
+            #[inline]
+            fn deserialize_reader<R: std::io::Read>(reader: &mut R) -> std::io::Result<Self> {
+                let mut bytes = [0u8; size_of::<$type>()];
+                reader.read_exact(&mut bytes)?;
+                Ok($type::from_le_bytes(bytes))
+            }
         }
     };
 }
